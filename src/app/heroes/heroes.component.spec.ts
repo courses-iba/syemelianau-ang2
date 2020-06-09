@@ -25,35 +25,51 @@ describe('HeroesComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it(`should have as hero id 1 and hero name 'Windstorm'`, () => {
-    expect(component.hero).toEqual({
-      id: 1,
-      name: 'Windstorm'
+  it('should have heroes', () => {
+    expect(component.heroes).toBeTruthy();
+  });
+
+  it(`should render title 'My Heroes'`, () => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('h2').textContent).toContain('My Heroes');
+  });
+
+  it('should render list of heroes in a li tags', () => {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelectorAll('li').length).toBe(component.heroes.length);
+  });
+
+  it('should not display details', () => {
+    const div = fixture.debugElement.query(By.css('div'));
+    expect(div).toBeFalsy();
+  });
+
+  describe('on list item click', () => {
+    const index = 0;
+    let list;
+    let el;
+
+    beforeEach(() => {
+      list = fixture.debugElement.queryAll(By.css('li'));
+      el = list[index].nativeElement;
+      el.dispatchEvent(new Event('click'));
+      fixture.detectChanges();
     });
-  });
 
-  it('should render title with uppercase hero name', () => {
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h2').textContent).toContain(component.hero.name.toUpperCase());
-  });
+    it('should display details', () => {
+      const div = fixture.debugElement.query(By.css('div'));
+      expect(div).toBeTruthy();
+    });
 
-  it('should render 2 div tags', () => {
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelectorAll('div').length).toBe(2);
-  });
-
-  describe('input element', () => {
-    it('should update hero name', (done) => {
-      fixture.whenStable().then(() => {
-        const name = 'Fog';
-        const input = fixture.debugElement.query(By.css('input'));
-        const el = input.nativeElement;
-        expect(el.value).toBe(component.hero.name);
-        el.value = name;
-        el.dispatchEvent(new Event('input'));
-        expect(fixture.componentInstance.hero.name).toBe(name);
-        done();
-      });
+    it('input element should update hero name', () => {
+      const name = 'Fog';
+      const input = fixture.debugElement.query(By.css('input'));
+      const inputEl = input.nativeElement;
+      expect(el.textContent).toContain(fixture.componentInstance.selectedHero.name);
+      inputEl.value = name;
+      inputEl.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      expect(el.textContent).toContain(name);
     });
   });
 });
