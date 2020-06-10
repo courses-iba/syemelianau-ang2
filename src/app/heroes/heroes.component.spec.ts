@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { HeroesComponent } from './heroes.component';
-import { FormsModule } from '@angular/forms';
+import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
 import { By } from '@angular/platform-browser';
 
 describe('HeroesComponent', () => {
@@ -10,7 +11,7 @@ describe('HeroesComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HeroesComponent],
+      declarations: [HeroesComponent, HeroDetailComponent],
       imports: [FormsModule]
     }).compileComponents();
   }));
@@ -39,37 +40,21 @@ describe('HeroesComponent', () => {
     expect(compiled.querySelectorAll('li').length).toBe(component.heroes.length);
   });
 
-  it('should not display details', () => {
-    const div = fixture.debugElement.query(By.css('div'));
-    expect(div).toBeFalsy();
+  it('should render hero details', () => {
+    const heroDetailComponent = fixture.debugElement.query(By.css('app-hero-detail'));
+    expect(heroDetailComponent).toBeTruthy();
   });
 
   describe('on list item click', () => {
-    const index = 0;
-    let list;
-    let el;
-
-    beforeEach(() => {
-      list = fixture.debugElement.queryAll(By.css('li'));
-      el = list[index].nativeElement;
-      el.dispatchEvent(new Event('click'));
-      fixture.detectChanges();
-    });
-
-    it('should display details', () => {
-      const div = fixture.debugElement.query(By.css('div'));
-      expect(div).toBeTruthy();
-    });
-
-    it('input element should update hero name', () => {
-      const name = 'Fog';
-      const input = fixture.debugElement.query(By.css('input'));
-      const inputEl = input.nativeElement;
-      expect(el.textContent).toContain(fixture.componentInstance.selectedHero.name);
-      inputEl.value = name;
-      inputEl.dispatchEvent(new Event('input'));
-      fixture.detectChanges();
-      expect(el.textContent).toContain(name);
+    it('should change selected hero value', () => {
+      const list = fixture.debugElement.queryAll(By.css('li'));
+      list.forEach((de) => {
+        const el = de.nativeElement;
+        const value = component.selectedHero;
+        el.dispatchEvent(new Event('click'));
+        fixture.detectChanges();
+        expect(value).not.toEqual(component.selectedHero);
+      });
     });
   });
 });
