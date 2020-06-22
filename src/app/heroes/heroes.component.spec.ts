@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
 import { HeroesComponent } from './heroes.component';
@@ -56,5 +56,22 @@ describe('HeroesComponent', () => {
         expect(value).not.toEqual(component.selectedHero);
       });
     });
+  });
+
+  describe('onSelect', () => {
+    it('should set selectedHero value', fakeAsync(inject([], () => {
+      const hero = { id: 11, name: 'Dr Nice' };
+      component.onSelect(hero);
+      tick();
+      expect(component.selectedHero).toEqual(hero);
+    })));
+  });
+
+  describe('getHeroes', () => {
+    it('should get heroes', fakeAsync(inject([], () => {
+      component.getHeroes();
+      tick();
+      expect(component.heroes).toBeDefined();
+    })));
   });
 });
