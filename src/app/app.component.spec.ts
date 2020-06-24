@@ -1,5 +1,5 @@
 import { TestBed, async } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
 import { HeroesComponent } from './heroes/heroes.component';
@@ -15,7 +15,7 @@ describe('AppComponent', () => {
         HeroDetailComponent,
         MessagesComponent
       ],
-      imports: [FormsModule]
+      imports: [RouterTestingModule]
     }).compileComponents();
   }));
 

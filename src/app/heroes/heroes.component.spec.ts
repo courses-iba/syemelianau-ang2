@@ -1,9 +1,11 @@
 import { async, ComponentFixture, fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { HeroesComponent } from './heroes.component';
 import { HeroDetailComponent } from '../hero-detail/hero-detail.component';
-import { By } from '@angular/platform-browser';
+import { HeroService } from '../hero.service';
+import { of } from 'rxjs';
+import { HEROES } from '../mock-heroes';
 
 describe('HeroesComponent', () => {
   let component: HeroesComponent;
@@ -12,7 +14,8 @@ describe('HeroesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeroesComponent, HeroDetailComponent],
-      imports: [FormsModule]
+      imports: [RouterTestingModule],
+      providers: [HeroService]
     }).compileComponents();
   }));
 
@@ -40,35 +43,17 @@ describe('HeroesComponent', () => {
     expect(compiled.querySelectorAll('li').length).toBe(component.heroes.length);
   });
 
-  it('should render hero details', () => {
-    const heroDetailComponent = fixture.debugElement.query(By.css('app-hero-detail'));
-    expect(heroDetailComponent).toBeTruthy();
-  });
-
-  describe('on list item click', () => {
-    it('should change selected hero value', () => {
-      const list = fixture.debugElement.queryAll(By.css('li'));
-      list.forEach((de) => {
-        const el = de.nativeElement;
-        const value = component.selectedHero;
-        el.dispatchEvent(new Event('click'));
-        fixture.detectChanges();
-        expect(value).not.toEqual(component.selectedHero);
-      });
-    });
-  });
-
-  describe('onSelect', () => {
-    it('should set selectedHero value', fakeAsync(inject([], () => {
-      const hero = { id: 11, name: 'Dr Nice' };
-      component.onSelect(hero);
-      tick();
-      expect(component.selectedHero).toEqual(hero);
-    })));
-  });
-
   describe('getHeroes', () => {
+    let heroService: HeroService;
+
+    beforeEach(() => {
+      heroService = TestBed.inject(HeroService);
+      spyOn(heroService, 'getHeroes').and.returnValue(of(HEROES));
+    });
+
     it('should get heroes', fakeAsync(inject([], () => {
+      component.heroes = undefined;
+      expect(component.heroes).not.toBeDefined();
       component.getHeroes();
       tick();
       expect(component.heroes).toBeDefined();

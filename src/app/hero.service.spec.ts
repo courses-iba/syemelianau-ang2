@@ -22,4 +22,13 @@ describe('HeroService', () => {
       });
     });
   });
+
+  describe('getHero', () => {
+    it('should load a hero', () => {
+      const testHero = { id: 18, name: 'Dr IQ' };
+      service.getHero(testHero.id).subscribe((hero: Hero) => {
+        expect(hero).toEqual(testHero);
+      });
+    });
+  });
 });
