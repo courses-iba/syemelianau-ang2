@@ -6,6 +6,8 @@ import { Hero } from '../hero';
 import { Observable, of } from 'rxjs';
 import { HEROES } from '../mock-heroes';
 import { HeroService } from '../hero.service';
+import { By } from '@angular/platform-browser';
+import { HeroSearchComponent } from '../hero-search/hero-search.component';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -20,7 +22,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DashboardComponent],
+      declarations: [DashboardComponent, HeroSearchComponent],
       imports: [RouterTestingModule],
       providers: [{ provide: HeroService, useClass: MockHero }]
     }).compileComponents();
@@ -39,6 +41,11 @@ describe('DashboardComponent', () => {
 
   it('should have heroes', () => {
     expect(component.heroes).toBeTruthy();
+  });
+
+  it('should render hero search', () => {
+    const heroSearchComponent = fixture.debugElement.query(By.css('app-hero-search'));
+    expect(heroSearchComponent).toBeTruthy();
   });
 
   describe('getHeroes', () => {
